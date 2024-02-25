@@ -1,0 +1,35 @@
+% Hello Future Joe this is the start of smt beautiful
+
+maxW = 2000; 
+currW = 0;
+
+CutinSpeed = 3;
+CutoutSpeed = 21;
+
+Power_array = [];
+Speed_array = [];
+
+
+for speed = 3:12
+    currW = (0.5)*(0.35)*(1.293)*(pi)*(50)^2*(speed^3);
+    Power_array(end+1) = currW*24*365/5;
+    Speed_array(end+1) = speed;
+end
+
+for speed = 14:21
+    currW = 10;
+    Power_array(end+1) = currW;
+    Speed_array(end+1) = speed;
+end
+
+for speed = 22:25
+    currW = 0;
+    Power_array(end+1) = currW;
+    Speed_array(end+1) = speed;
+end
+
+plot(Speed_array,Power_array, 'r--');
+% Labels and title
+xlabel('Speed (in m/hr)')
+ylabel('Power (in kWh/year)')
+title('Power vs speed')
