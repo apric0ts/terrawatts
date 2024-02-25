@@ -2,16 +2,9 @@ import random
 
 class Climate():
     def __init__(self, sunlight, wind_speed):
-        self.sunlight = sunlight # 0 -> 1
-        self.wind_speed = wind_speed
+        self.sunlight = sunlight # from 0 to 1
+        self.wind_speed = wind_speed # Max speed = 55
 
-class Sunny(Climate):
-    def calculate_sun_level() -> float: 
-        return random.randint()/100.0
-
-class Windy(Climate):
-    def calculate_wind_level() -> float: 
-        return random.randint()/100.0
 
 class EnergySource:
     def __init__(self, id: str, cost: int, output: float):
@@ -30,8 +23,8 @@ class Windmill(EnergySource):
     def calculate_energy_output(self, climate: Climate) -> float:
         return self.output * climate.wind_speed
     
-    def isValid(terrain: str) -> bool:
-        return (terrain != "Ocean" or terrain != "Swamp")  
+    def whatType(self):
+        return "Windmill" 
     
 
 
@@ -39,16 +32,16 @@ class SolarPanel(EnergySource):
     def calculate_energy_output(self, climate: Climate) -> float:
         return self.output * climate.sunlight
 
-    def isValid(terrain: str) -> bool:
-        return (terrain != "Ocean" or terrain != "Swamp") 
+    def whatType(self):
+        return "SolarPanel" 
 
 
 class Turbine(EnergySource):
     def calculate_energy_output(self, climate: Climate) -> float:
         return self.output
 
-    def isValid(terrain: str) -> bool:
-        return (terrain == "Ocean")  
+    def whatType(self):
+        return "Turbine"  
 
 
 class Player():
@@ -58,8 +51,9 @@ class Player():
         self.revenue = revenue
 
 class Customer(): 
-    def __init__(self, happiness): 
+    def __init__(self, happiness, annual_kwh): 
         self.happiness = happiness #number from 0 to 1 
+        self.annual_kwh = annual_kwh # 106
 
 class Posn():
     def __init__(self, x, y):
@@ -72,7 +66,17 @@ class Board():
     def __init__(self, board):
         self.board = board # list of list of tiles
         self.width = len(board[0])
-        self.height = len(board)
+        self.height = len(board) 
+
+    def set_at_location(self, tile, position):
+        print(position[0],position[1])
+        self.board[position[1]][position[0]] = tile
+
+    def get_at_location(self, position):
+        #print(self)
+        return self.board[position[1]][position[0]]
+        
+        
 
 
 
@@ -83,6 +87,13 @@ class Tile():
         self.energy_source = energy_source
         self.image = image
 
+    def addSource(self, source: EnergySource): 
+        self.energy_source = source
+
+    def removeSource(self): 
+        self.energy_source = None
+    
+    
 
 
 
@@ -102,8 +113,8 @@ OOSSSL
 LLSSOL 
 '''
 
-customer = Customer(0.85);  
-c = Climate(0.55, 0.10)
+customer = Customer(0.85, 500) #customer wants 200 million kilowatthours/year 
+c = Climate(0.55, 5) 
 balance = 200
 plateau_tile = Tile("plateau", None, None) 
 ocean_tile = Tile("ocean", None, None) 
@@ -118,3 +129,6 @@ row_7 = [plateau_tile, plateau_tile, swamp_tile, swamp_tile, ocean_tile, plateau
 
 # starting_board_1 = [row_1, row_2, row_3, row_4, row_5, row_6, row_7]
 starting_board_1 = Board([row_1, row_2, row_3, row_4, row_5, row_6, row_7])
+
+energy_source_outputs = {"Windmill" : 6, "SolarPanel" : 0.55, "Turbine" : 122}
+energy_source_prices = {"Windmill" : 2, "SolarPanel" : 0.6, "Turbine" : 50}
